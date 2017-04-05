@@ -1,5 +1,7 @@
 #! python3
 
+#Small script that infinetely checks battery status of laptop until its become under 11%. It prints out and write to logFile percentage of charge and current time every 120 seconds or every N seconds you want it to. Initially it checks if there is 'psutil' module on PC. if not, it will be installed. 
+
 import pip, time
 
 #checks if module 'psutil' has already been installed. If not - it's gonna be installed
