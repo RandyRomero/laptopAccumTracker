@@ -1,8 +1,8 @@
 #! python3
 
-#Small script that infinetely checks battery status of laptop until its become under 11%. It prints out and write to logFile percentage of charge and current time every 120 seconds or every N seconds you want it to. Initially it checks if there is 'psutil' module on PC. if not, it will be installed. 
+#Small script that infinetely checks battery status of laptop until its become lower than 11%. It prints out and writes to logFile percentage of charge and current time every 120 seconds or every N seconds you want it to. Initially it checks if there is 'psutil' module on PC. if not, it will be installed. 
 
-import pip, time
+import pip, time, logging
 
 #checks if module 'psutil' has already been installed. If not - it's gonna be installed
 try:
@@ -10,7 +10,12 @@ try:
 except ImportError:
 	pip.main(['install', 'psutil'])
 
-import psutil 
+import psutil
+
+logging.basicConfig(
+	format = "%(levelname) -1s %(asctime)s line %(lineno)s: %(message)s",
+	level = logging.DEBUG
+	)
 
 #get time to add to name of log file
 timestr = time.strftime('%Y-%m-%d__%Hh%Mm%Ss')
@@ -23,20 +28,27 @@ def prlog(message):
 	print(message)
 	logFile.write(message + '\n')
 
-# check and write in file status of battery every 60 sec until there is only 10 percent left
-while battery.percent > 10:
+# check and write in file status of battery every N sec until there is only 10 percent left
+totalTime = 0
+timer = 5
+
+while battery.percent > 99:
 	battery = psutil.sensors_battery()
 	percent = battery.percent
 	timeNow = time.strftime('%Hh%Mm%Ss')
 	#open log file in write mode with current time in its name
 	logFile = open('BatteryStatus ' + timestr + '.txt', 'a')
 	prlog(timeNow + ': battery percent is ' + str(percent) + '%.')
+	prlog('Script has already been working for ' + str('%0.0f' % (totalTime/60) + ' minutes.'))
 	logFile.close()
 	#timer is here, in seconds
-	time.sleep(120)
+	time.sleep(timer)
+	totalTime = totalTime + timer
+
 
 battery = psutil.sensors_battery()
 percent = battery.percent
 timeNow = time.strftime('%Hh%Mm%Ss')
-prlog(timeNow + 'Battery status is low!! (' + str(percent) + '%). Script is switching off.')
+logFile = open('BatteryStatus ' + timestr + '.txt', 'a')
+prlog(timeNow + ': battery level is low!! (' + str(percent) + '%). Script has been working for ' + str('%0.0f' % (totalTime/60) + ' minutes and now it switches off.'))
 logFile.close()
