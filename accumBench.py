@@ -1,21 +1,39 @@
 #! python3
 
-import time, psutil
+import pip, time
+
+#checks if module 'psutil' has already been installed. If not - it's gonna be installed
+try:
+	__import__('psutil')
+except ImportError:
+	pip.main(['install', 'psutil'])
+
+import psutil 
 
 #get time to add to name of log file
 timestr = time.strftime('%Y-%m-%d__%Hh%Mm%Ss')
 
-#open log file in write mode with current time in its name
-
+#get battery status
 battery = psutil.sensors_battery()
 percent = battery.percent
 
-while battery.percent > 15:
+def prlog(message):
+	print(message)
+	logFile.write(message + '\n')
+
+# check and write in file status of battery every 60 sec until there is only 10 percent left
+while battery.percent > 10:
 	battery = psutil.sensors_battery()
 	percent = battery.percent
 	timeNow = time.strftime('%Hh%Mm%Ss')
+	#open log file in write mode with current time in its name
 	logFile = open('BatteryStatus ' + timestr + '.txt', 'a')
-	logFile.write(timeNow + ': battery status is ' + str(percent) + '%.\n')
-	print(timeNow + ': battery percent is ' + str(percent) + '%.')
+	prlog(timeNow + ': battery percent is ' + str(percent) + '%.')
 	logFile.close()
 	time.sleep(5)
+
+battery = psutil.sensors_battery()
+percent = battery.percent
+timeNow = time.strftime('%Hh%Mm%Ss')
+prlog(timeNow + 'Battery status is low!! (' + str(percent) + '%). Script is switching off.')
+logFile.close()
