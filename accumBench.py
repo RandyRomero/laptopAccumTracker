@@ -30,7 +30,8 @@ while battery.percent > 10:
 	logFile = open('BatteryStatus ' + timestr + '.txt', 'a')
 	prlog(timeNow + ': battery percent is ' + str(percent) + '%.')
 	logFile.close()
-	time.sleep(5)
+	#timer is here, in seconds
+	time.sleep(120)
 
 battery = psutil.sensors_battery()
 percent = battery.percent
