@@ -30,9 +30,9 @@ def prlog(message):
 
 # check and write in file status of battery every N sec until there is only 10 percent left
 totalTime = 0
-timer = 5
+timer = 120
 
-while battery.percent > 99:
+while battery.percent > 10:
 	battery = psutil.sensors_battery()
 	percent = battery.percent
 	timeNow = time.strftime('%Hh%Mm%Ss')
