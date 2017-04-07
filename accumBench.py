@@ -12,6 +12,7 @@ except ImportError:
 
 import psutil
 
+
 logging.basicConfig(
 	format = "%(levelname) -1s %(asctime)s line %(lineno)s: %(message)s",
 	level = logging.DEBUG
@@ -27,6 +28,27 @@ percent = battery.percent
 def prlog(message):
 	print(message)
 	logFile.write(message + '\n')
+
+def browserRefresh():
+	try:
+		from selenium import webdriver
+	except:
+		pip.main(['install', 'selenium'])
+
+	from selenium import webdriver
+
+	# browser = webdriver.Firefox()
+	browser = webdriver.Chrome(executable_path=r".\\chromedriver.exe")
+	time.sleep(5)
+	browser.get('https://www.computeruniverse.ru/')
+	time.sleep(5)
+	browser.get('https://unsplash.com/')
+	time.sleep(5)
+	browser.get('https://3dnews.ru/')
+	time.sleep(5)
+	browser.get('http://www.ferra.ru/')
+
+browserRefresh()
 
 # check and write in file status of battery every N sec until there is only 10 percent left
 totalTime = 0

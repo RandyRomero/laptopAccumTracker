@@ -1,3 +1,0 @@
-17h02m57s: battery percent is 54%.
-Script has already been working for 0 minute(s).
-
