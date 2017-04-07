@@ -38,17 +38,9 @@ while battery.percent > 10:
 	timeNow = time.strftime('%Hh%Mm%Ss')
 	#open log file in write mode with current time in its name
 	logFile = open('BatteryStatus ' + timestr + '.txt', 'a')
-	prlog(timeNow + ': battery percent is ' + str(percent) + '%.')
-	prlog('Script has already been working for ' + str('%0.0f' % (totalTime/60) + ' minute(s).'))
+	prlog(timeNow + ': battery level is ' + str(percent) + '%.')
+	prlog('Script has already been working for ' + str('%0.0f' % (totalTime/60) + ' minute(s).\n'))
 	logFile.close()
 	#timer is here, in seconds
 	time.sleep(timer)
 	totalTime = totalTime + timer
-
-
-battery = psutil.sensors_battery()
-percent = battery.percent
-timeNow = time.strftime('%Hh%Mm%Ss')
-logFile = open('BatteryStatus ' + timestr + '.txt', 'a')
-prlog(timeNow + ': battery level is low!! (' + str(percent) + '%). Script has been working for ' + str('%0.0f' % (totalTime/60) + ' minute(s) and now it switches off.'))
-logFile.close()
