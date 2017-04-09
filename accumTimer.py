@@ -22,8 +22,9 @@ def prlog(message):
 	logFile.write(message + '\n')
 
 while True:
-	startBrowser = input('Hi. Do you want to start browser benchmark? (y/n): ')
+	startBrowser = (input('Hi. Do you want to start browser benchmark? (y/n): ')).lower()
 	if startBrowser == 'y':
+		#run 'browserBench' simultaneously with 'accumTimer'
 		subprocess.Popen([sys.executable, '.\\browserBench.py'])
 		break
 	elif startBrowser == 'n':
@@ -50,6 +51,8 @@ while True:
 	timeNow = time.strftime('%Hh%Mm%Ss')
 	#open log file in write mode with current time in its name
 	logFile = open('BatteryStatus ' + timestr + '.txt', 'a')
+	if battery.power_plugged == True:
+		prlog('\nWARNING! You forget to unplug te laptop.')
 	prlog(timeNow + ': battery level is ' + str(percent) + '%.')
 	prlog('Script has already been working for ' + str('%0.0f' % (totalTime/60) + ' minute(s).\n'))
 	logFile.close()
