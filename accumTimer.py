@@ -2,7 +2,7 @@
 
 #Small script that infinetely checks battery status of laptop until its become lower than 11%. It prints out and writes to logFile percentage of charge and current time every 120 seconds or every N seconds you want it to. Initially it checks if there is 'psutil' module on PC. if not, it will be installed. 
 
-import pip, time, logging
+import os, pip, time, logging, subprocess, sys
 
 #checks if module 'psutil' has already been installed. If not - it's gonna be installed
 try:
@@ -12,11 +12,26 @@ except ImportError:
 
 import psutil
 
-
 logging.basicConfig(
 	format = "%(levelname) -1s %(asctime)s line %(lineno)s: %(message)s",
 	level = logging.DEBUG
 	)
+
+def prlog(message):
+	print(message)
+	logFile.write(message + '\n')
+
+while True:
+	startBrowser = input('Hi. Do you want to start browser benchmark? (y/n): ')
+	if startBrowser == 'y':
+		subprocess.Popen([sys.executable, '.\\browserBench.py'])
+		break
+	elif startBrowser == 'n':
+		print('Ok, only timer is gonna work.')
+		break
+	else:
+		print('Input error. You should type in only "y" on "n".')	
+
 
 #get time to add to name of log file
 timestr = time.strftime('%Y-%m-%d__%Hh%Mm%Ss')
@@ -25,36 +40,11 @@ timestr = time.strftime('%Y-%m-%d__%Hh%Mm%Ss')
 battery = psutil.sensors_battery()
 percent = battery.percent
 
-def prlog(message):
-	print(message)
-	logFile.write(message + '\n')
-
-def browserRefresh():
-	try:
-		from selenium import webdriver
-	except:
-		pip.main(['install', 'selenium'])
-
-	from selenium import webdriver
-
-	# browser = webdriver.Firefox()
-	browser = webdriver.Chrome(executable_path=r".\\chromedriver.exe")
-	time.sleep(5)
-	browser.get('https://www.computeruniverse.ru/')
-	time.sleep(5)
-	browser.get('https://unsplash.com/')
-	time.sleep(5)
-	browser.get('https://3dnews.ru/')
-	time.sleep(5)
-	browser.get('http://www.ferra.ru/')
-
-browserRefresh()
-
 # check and write in file status of battery every N sec until there is only 10 percent left
 totalTime = 0
 timer = 120
 
-while battery.percent > 10:
+while True:
 	battery = psutil.sensors_battery()
 	percent = battery.percent
 	timeNow = time.strftime('%Hh%Mm%Ss')
