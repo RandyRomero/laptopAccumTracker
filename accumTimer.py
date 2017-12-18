@@ -7,7 +7,7 @@
 
 import pip
 import time
-import logging
+import os
 import subprocess
 import sys
 
@@ -19,10 +19,8 @@ except ImportError:
 
 import psutil
 
-logging.basicConfig(
-    format="%(levelname) -1s %(asctime)s line %(lineno)s: %(message)s",
-    level=logging.DEBUG
-    )
+if not os.path.exists('log'):
+    os.mkdir('log')
 
 
 def prlog(message):
@@ -58,9 +56,9 @@ while True:
     percent = battery.percent
     timeNow = time.strftime('%Hh%Mm%Ss')
     # Open log file in write mode with current time in its name
-    logFile = open('BatteryStatus ' + timestr + '.txt', 'a')
+    logFile = open(os.path.join('log', 'BatteryStatus ' + timestr + '.txt'), 'a')
     if battery.power_plugged:
-        prlog('\nWARNING! You forget to unplug te laptop.')
+        prlog('\nWARNING! You forget to unplug the laptop.')
     prlog(timeNow + ': battery level is ' + str(percent) + '%.')
     prlog('Script has already been working for ' + str('%0.0f' % (totalTime/60) + ' minute(s).\n'))
     logFile.close()
