@@ -23,9 +23,6 @@ if not os.path.exists('log'):
     os.mkdir('log')
 
 
-def prlog(message):
-    print(message)
-    logFile.write(message + '\n')
 
 
 while True:
@@ -42,25 +39,37 @@ while True:
 
 # Get time to add to name of log file
 timestr = time.strftime('%Y-%m-%d__%Hh%Mm%Ss')
+logFile = os.path.join('log', 'BatteryStatus ' + timestr + '.txt')
 
-# Get battery status
-battery = psutil.sensors_battery()
-percent = battery.percent
+startTime = time.time()
 
-totalTime = 0
-# How often to check battery status
-timer = 120
+# check period
+period = 120
+
+
+def readable_time(second):
+    h = int(second / (60 * 60))
+    m = int((second % (60 * 60)) / 60)
+    s = second % 60
+    return "{} hour {:>02} min {:>02.0f} second".format(h, m, s)
+
 
 while True:
     battery = psutil.sensors_battery()
     percent = battery.percent
-    timeNow = time.strftime('%Hh%Mm%Ss')
-    # Open log file in write mode with current time in its name
-    logFile = open(os.path.join('log', 'BatteryStatus ' + timestr + '.txt'), 'a')
+
+    # create messages to print and log
+    messageBox = []
     if battery.power_plugged:
-        prlog('\nWARNING! You forget to unplug the laptop.')
-    prlog(timeNow + ': battery level is ' + str(percent) + '%.')
-    prlog('Script has already been working for ' + str('%0.0f' % (totalTime/60) + ' minute(s).\n'))
-    logFile.close()
-    time.sleep(timer)
-    totalTime = totalTime + timer
+        messageBox.append('The laptop is pluged.')
+    timeNow = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime())
+    messageBox.append(timeNow + ': battery level : ' + str(percent) + '%.')
+    elapsed = time.time() - startTime
+    messageBox.append('Script has been running for {}'.format(readable_time(elapsed)))
+    messageBox.append('Ctrl+C to quit.\n')
+    message = '\n'.join(messageBox)
+
+    print(message)
+    with open(logFile,'a') as f:
+        f.write(message)
+    time.sleep(period)
